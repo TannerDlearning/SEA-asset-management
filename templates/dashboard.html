@@ -17,15 +17,15 @@
         <td>{{ asset.type }}</td>
         <td>{{ asset.username }}</td>
         <td>{{ asset.status }}</td>
-        <td>
+        <td style="white-space: nowrap;">
             {% if asset.owner_id == session.user or session.role == 'admin' %}
                 <a class="button" href="/edit/{{ asset.id }}">Edit</a>
             {% endif %}
             {% if session.role == 'admin' %}
-                <a class="button" href="/delete/{{ asset.id }}">Delete</a>
+                <a class="button delete" href="/delete/{{ asset.id }}">Delete</a>
                 {% if asset.status != 'approved' %}
-                    <a class="button" href="/approve/{{ asset.id }}">Approve</a>
-                    <a class="button" href="/reject/{{ asset.id }}">Reject</a>
+                    <a class="button approve" href="/approve/{{ asset.id }}">Approve</a>
+                    <a class="button reject" href="/reject/{{ asset.id }}">Reject</a>
                 {% endif %}
             {% endif %}
         </td>

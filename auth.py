@@ -8,20 +8,25 @@ def register():
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '').strip()
+        confirm_password = request.form.get('confirm_password', '').strip()
 
-        if not username or not password:
-            flash('Username and password are required.', 'error')
+        if not username or not password or not confirm_password:
+            flash('All fields are required.', 'error')
             return render_template('register.html')
 
-        if username.lower() == 'admin':
+        if password != confirm_password:
+            flash('Passwords do not match.', 'error')
+            return render_template('register.html')
+
+        if username == 'admin':
             flash('You cannot register as admin.', 'error')
             return render_template('register.html')
 
         conn = db.get_connection()
         try:
             conn.execute(
-                "INSERT INTO users (username, password, role) VALUES (?, ?, 'user')",
-                (username, password)
+                "INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
+                (username, password, 'user')  # always register as user
             )
             conn.commit()
             flash('Registered successfully.', 'success')
@@ -35,6 +40,7 @@ def register():
             conn.close()
 
     return render_template('register.html')
+
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
