@@ -6,26 +6,43 @@ bp = Blueprint('auth', __name__)
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        role = request.form['role']
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+
+        if not username or not password:
+            flash('Username and password are required.', 'error')
+            return render_template('register.html')
+
+        # Prevent others from registering as admin
+        if username.lower() == 'admin':
+            flash("The username 'admin' is reserved.", 'error')
+            return render_template('register.html')
+
         conn = db.get_connection()
         try:
-            conn.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", (username, password, role))
+            conn.execute(
+                "INSERT INTO users (username, password, role) VALUES (?, ?, 'user')",
+                (username, password)
+            )
             conn.commit()
-            flash('Registered successfully.', 'success')  # ✅ success = green
+            flash('Registered successfully.', 'success')
             return redirect('/login')
-        except:
-            flash('Username already exists.', 'error')    # ✅ error = red
+        except Exception as e:
+            if 'UNIQUE constraint failed: users.username' in str(e):
+                flash('Username already exists.', 'error')
+            else:
+                flash(f'Registration error: {e}', 'error')
         finally:
             conn.close()
+
     return render_template('register.html')
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+
         conn = db.get_connection()
         user = conn.execute(
             "SELECT * FROM users WHERE username = ? AND password = ?",
@@ -38,7 +55,7 @@ def login():
             session['role'] = user['role']
             return redirect('/')
         else:
-            flash('Invalid username or password.', 'error')  # ✅ this triggers the message
+            flash('Invalid username or password.', 'error')
 
     return render_template('login.html')
 

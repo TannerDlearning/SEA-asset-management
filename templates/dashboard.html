@@ -16,7 +16,7 @@
         <td>{{ asset.type }}</td>
         <td>{{ asset.username }}</td>
         <td>
-            {% if asset.owner_id == session.user %}
+            {% if asset.owner_id == session.user or session.role == 'admin' %}
                 <a class="button" href="/edit/{{ asset.id }}">Edit</a>
             {% endif %}
             {% if session.role == 'admin' %}
