@@ -8,6 +8,7 @@
         <th>Name</th>
         <th>Type</th>
         <th>Owner</th>
+        <th>Status</th>
         <th>Actions</th>
     </tr>
     {% for asset in assets %}
@@ -15,12 +16,17 @@
         <td>{{ asset.name }}</td>
         <td>{{ asset.type }}</td>
         <td>{{ asset.username }}</td>
+        <td>{{ asset.status }}</td>
         <td>
             {% if asset.owner_id == session.user or session.role == 'admin' %}
                 <a class="button" href="/edit/{{ asset.id }}">Edit</a>
             {% endif %}
             {% if session.role == 'admin' %}
                 <a class="button" href="/delete/{{ asset.id }}">Delete</a>
+                {% if asset.status != 'approved' %}
+                    <a class="button" href="/approve/{{ asset.id }}">Approve</a>
+                    <a class="button" href="/reject/{{ asset.id }}">Reject</a>
+                {% endif %}
             {% endif %}
         </td>
     </tr>

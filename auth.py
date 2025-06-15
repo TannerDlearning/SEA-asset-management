@@ -13,9 +13,8 @@ def register():
             flash('Username and password are required.', 'error')
             return render_template('register.html')
 
-        # Prevent others from registering as admin
         if username.lower() == 'admin':
-            flash("The username 'admin' is reserved.", 'error')
+            flash('You cannot register as admin.', 'error')
             return render_template('register.html')
 
         conn = db.get_connection()
