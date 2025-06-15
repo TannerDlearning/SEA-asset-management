@@ -13,10 +13,10 @@ def register():
         try:
             conn.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", (username, password, role))
             conn.commit()
-            flash('Registered successfully.', 'success')  # ✅ success = green
+            flash('Registered successfully.', 'success')
             return redirect('/login')
         except:
-            flash('Username already exists.', 'error')    # ✅ error = red
+            flash('Username already exists.', 'error')
         finally:
             conn.close()
     return render_template('register.html')
@@ -38,7 +38,7 @@ def login():
             session['role'] = user['role']
             return redirect('/')
         else:
-            flash('Invalid username or password.', 'error')  # ✅ this triggers the message
+            flash('Invalid username or password.', 'error')
 
     return render_template('login.html')
 
