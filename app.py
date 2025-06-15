@@ -2,19 +2,17 @@ import os
 import sqlite3
 from flask import Flask
 import auth, assets
-import db  # this assumes you have a db.py with init_db() and get_connection()
-
+import db  
 app = Flask(__name__)
-app.secret_key = 'dev'
+app.secret_key = os.environ.get('SECRET_KEY', 'dev')  
 
-# Automatically create and initialize database if it doesn't exist
 if not os.path.exists("data.db"):
     print("Creating database...")
     db.init_db()
 
-# Register routes
 app.register_blueprint(auth.bp)
 app.register_blueprint(assets.bp)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000)) 
+    app.run(host='0.0.0.0', port=port)
