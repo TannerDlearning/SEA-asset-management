@@ -13,5 +13,5 @@ CREATE TABLE assets (
     name TEXT NOT NULL,
     type TEXT NOT NULL,
     owner_id INTEGER NOT NULL,
-    FOREIGN KEY(owner_id) REFERENCES users(id)
+    FOREIGN KEY (owner_id) REFERENCES users(id)
 );
